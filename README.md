@@ -19,6 +19,7 @@ The project emphasizes:
 ---
 ⚙️ Architecture Overview
 ---
+
 Backend: ASP.NET Core 8 MVC + Minimal Endpoints
 Integration Layer: Plugin-style command runner for media pipelines (e.g., YouTube-DL-Sharp)
 Storage: Local sandbox with auto-cleanup
@@ -40,7 +41,7 @@ See LICENSE for details.
 
 ---
 ## 🚀 Quickstart
----
+
 Copy appsettings.json to appsettings.Development.json and fill username/password values. This project does not ship external binaries (e.g., ffmpeg, yt-dlp). Install them separately and place them into ./ytmp3ify/bin-deps/. To run, in a bash shell:
 
 ```bash
