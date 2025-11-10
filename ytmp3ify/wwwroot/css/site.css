@@ -1,0 +1,84 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+:root {
+    --app-bg: #ffffff;
+    --app-fg: #212529;
+    --app-muted: #6c757d;
+    --app-border: #dee2e6;
+    --app-card: #ffffff;
+}
+
+/* DARK overrides (auto via OS setting) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --app-bg: #000000; /* pure black */
+        --app-fg: #e6e6e6;
+        --app-muted: #a5a5a5;
+        --app-border: #262626;
+        --app-card: #0a0a0a;
+    }
+}
+
+/* Apply to major surfaces */
+html, body {
+    background: var(--app-bg) !important;
+    color: var(--app-fg) !important;
+}
+
+/* Links, navbar, footer follow variables */
+a, .nav-link {
+    color: var(--app-fg);
+}
+
+    a:hover, .nav-link:hover {
+        color: var(--app-fg);
+        opacity: .85;
+    }
+
+.navbar, footer, .bg-body, .card, .list-group, .dropdown-menu {
+    background: var(--app-card) !important;
+    color: var(--app-fg) !important;
+    border-color: var(--app-border) !important;
+}
+
+/* Borders & hr */
+.border, .border-top, .border-bottom, hr {
+    border-color: var(--app-border) !important;
+}
+
+/* Muted text helpers */
+.text-muted, .text-body-secondary {
+    color: var(--app-muted) !important;
+}
+
+/* Navbar toggler icon needs help in dark mode on 5.1 */
+@media (prefers-color-scheme: dark) {
+    .navbar .navbar-toggler {
+        border-color: var(--app-border);
+    }
+
+    .navbar .navbar-toggler-icon {
+        filter: invert(1) grayscale(100%); /* make the hamburger visible */
+    }
+}

@@ -1,0 +1,44 @@
+﻿@model ytmp3ify.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign in";
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+        form{max-width:360px}
+        label{display:block;margin:.75rem 0 .25rem}
+        input[type=text],input[type=password]{width:100%;padding:.5rem;border:1px solid #ccc;border-radius:.375rem}
+        button{margin-top:1rem;padding:.5rem .9rem;border:0;border-radius:.375rem;background:#111;color:#fff;cursor:pointer}
+        .validation-summary-errors{color:#b00020;margin:.5rem 0}
+    </style>
+</head>
+<body>
+    <h2>@ViewData["Title"]</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="validation-summary-errors">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <form method="post" asp-action="Login" asp-controller="Auth">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+        <label>Username</label>
+        <input asp-for="Username" autocomplete="username" />
+        <label>Password</label>
+        <input asp-for="Password" type="password" autocomplete="current-password" />
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>

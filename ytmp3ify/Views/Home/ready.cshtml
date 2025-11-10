@@ -1,0 +1,325 @@
+﻿@model ytmp3ify.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "available endpoints";
+}
+
+@section Scripts {
+    <script>
+        // Copy-to-clipboard
+        document.addEventListener('click', function (e) {
+          const btn = e.target.closest('button.copy-btn');
+          if (!btn) return;
+          const text = btn.getAttribute('data-copy');
+          navigator.clipboard.writeText(text).then(() => {
+            const old = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = old, 1200);
+          });
+        }, { passive: true });
+    </script>
+    
+    <style>
+      .codebox { position: relative; }
+      /* add right padding so the button never overlaps code */
+      .codebox pre { padding: 0.85rem 4.25rem 0.85rem 0.85rem; overflow:auto; }
+      .codebox .copy-btn {
+        position: absolute; top: .5rem; right: .5rem;
+      }
+        /* ===== API Reference theming (scoped) ===== */
+
+        /* Light mode polish (Bootstrap 5.1 baseline) */
+        .api-ref .accordion-item { background:#fff; }
+        .api-ref .accordion-button { background:#fff; }
+        .api-ref pre.bg-light { background:#f8f9fa !important; }
+
+        /* Auth banner:
+           - Light mode: let Bootstrap defaults show (lighter green bg + dark text)
+           - Dark mode: override to deeper green + white text */
+        .api-auth.alert-success {
+          /* no overrides in light mode → Bootstrap default look */
+        }
+        .api-auth .badge.bg-success {
+          /* keep Bootstrap default in light mode */
+        }
+        .api-ref .badge.bg-success2   { background: #21d39a !important;   color:#001c22 !important; }
+
+        /* --- Dark mode overrides (auto via OS setting OR manual toggle) --- */
+        @@media (prefers-color-scheme: dark) {
+          :root:not([data-theme="light"]) .api-ref,
+          :root:not([data-theme="light"]) .api-auth { /* scope to “dark unless forced light” */ }
+
+          /* Auth banner: deeper green only in dark mode */
+          :root:not([data-theme="light"]) .api-auth.alert-success{
+            background:#0e432e !important;
+            border-color:#1a5f45 !important;
+            color:#eafff2 !important;
+          }
+          :root:not([data-theme="light"]) .api-auth .badge.bg-success{
+            background:#21d39a !important;
+            color:#002117 !important;
+          }
+
+          /* API ref vars */
+          .api-ref{
+            --api-surface:#000;
+            --api-raised:#0e0e0e;
+            --api-border:#242424;
+            --api-text:#e8e8e8;
+            --api-muted:#a7a7a7;
+            --api-get:#2d7ef7;
+            --api-post:orange;
+            --api-delete:#ff6b6b;
+            --api-secondary:#9aa0a6;
+            --api-success:#21d39a;
+          }
+
+          /* Headings & text */
+          .api-ref, .api-ref h1, .api-ref h2, .api-ref h3, .api-ref h4,
+          .api-ref p, .api-ref li, .api-ref small { color: var(--api-text); }
+          .api-ref .text-muted { color: var(--api-muted) !important; }
+
+          /* Accordion shells */
+          .api-ref .accordion-item,
+          .api-ref .accordion-body {
+            background: var(--api-raised) !important;
+            color: var(--api-text) !important;
+            border-color: var(--api-border) !important;
+          }
+          .api-ref .accordion-item { border:1px solid var(--api-border); border-radius:.5rem; }
+          .api-ref .accordion-button {
+            background: var(--api-raised) !important;
+            color: var(--api-text) !important;
+            border-bottom:1px solid var(--api-border) !important;
+          }
+          .api-ref .accordion-button::after { filter: invert(1) grayscale(1); } /* chevron visible */
+
+          /* Tables */
+          .api-ref table { color: var(--api-text); }
+          .api-ref thead th { background:#121212; color:var(--api-text); border-color:var(--api-border); }
+          .api-ref tbody td, .api-ref th, .api-ref td { border-color: var(--api-border) !important; }
+
+          /* Code boxes (restore missing background) */
+          .api-ref .codebox pre,
+          .api-ref pre.bg-light,
+          .api-ref code {
+            background:#0a0a0a !important;
+            color:#e8e8e8 !important;
+          }
+
+          .code-title-bg {
+            background: unset !important;
+            border: unset !important;
+          }
+
+          /* Badges */
+          .api-ref .badge.bg-primary   { background: var(--api-get) !important;    color:#000 !important; }
+          .api-ref .badge.bg-success   { background: var(--api-post) !important;   color:#001c22 !important; }
+          .api-ref .badge.bg-success2   { background: var(--api-success) !important;   color:#001c22 !important; }
+          .api-ref .badge.bg-danger    { background: var(--api-delete) !important; }
+          .api-ref .badge.bg-secondary { background: var(--api-secondary) !important; color:#000 !important; }
+          .api-ref .badge.bg-info      { background:#C41E3A !important; color:white !important; }
+          .api-ref .badge.bg-dark      { background:#151515 !important; color:#ddd !important; border:1px solid var(--api-border); }
+        }
+
+        /* Manual override support: if you added a data-theme toggle, honor it */
+        :root[data-theme="dark"] .api-auth.alert-success{
+          background:#0e432e !important;
+          border-color:#1a5f45 !important;
+          color:#eafff2 !important;
+        }
+        :root[data-theme="dark"] .api-auth .badge.bg-success{
+          background:#21d39a !important; color:#002117 !important;
+        }
+
+        /* Codebox layout (yours) */
+        .api-ref .codebox { position:relative; }
+        .api-ref .codebox pre { padding:.85rem 4.25rem .85rem .85rem; overflow:auto; }
+        .api-ref .codebox .copy-btn { position:absolute; top:.5rem; right:.5rem; }
+
+        /* ===== Navbar hamburger visibility ===== */
+        /* Base (light) – dark icon */
+        .navbar .navbar-toggler-icon{
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(0,0,0,0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        /* Dark mode – white icon + subtle border so it's tappable */
+        @@media (prefers-color-scheme: dark){
+          :root:not([data-theme="light"]) .navbar .navbar-toggler { border-color:#2e2e2e; }
+          :root:not([data-theme="light"]) .navbar .navbar-toggler-icon{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255,255,255,0.88)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+          }
+        }
+
+        /* Manual dark override also gets the white icon */
+        :root[data-theme="dark"] .navbar .navbar-toggler { border-color:#2e2e2e; }
+        :root[data-theme="dark"] .navbar .navbar-toggler-icon{
+          background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255,255,255,0.88)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+    </style>
+}
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+        form{max-width:360px}
+        label{display:block;margin:.75rem 0 .25rem}
+        button{margin-top:1rem;padding:.5rem .9rem;border:0;border-radius:.375rem;background:#111;color:#fff;cursor:pointer}
+    </style>
+</head>
+<body>
+    <div class="alert alert-success api-auth d-flex align-items-center" role="alert">
+        <span class="badge bg-success me-2">AUTH</span>
+        You are signed in. Cookie session lasts 1 hour.
+    </div>
+
+    <h2>actions available:</h2>
+    <hr />
+    <a asp-controller="Audio" asp-action="Get"
+       class="btn"
+       style="display:inline-block;padding:.6rem 1rem;border-radius:.375rem;background:#111;color:#fff;text-decoration:none">
+       yt ⇾ audio
+    </a>
+    <br /><br />
+
+    <h2>api endpoints available:</h2>
+    <hr />
+
+    <section class="api-ref">
+        <div class="container py-4" style="padding-left:0 !important;padding-top:0 !important;">
+            <div class="accordion" id="apiAccordion">
+                <!-- GET /audio -->
+                <div class="accordion-item shadow-sm mb-3">
+                    <h2 class="accordion-header" id="hdr-audio">
+                        <button class="accordion-button collapsed d-flex align-items-center gap-2" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#ep-audio" aria-expanded="false" aria-controls="ep-audio">
+                            <span class="badge bg-primary">GET</span>
+                            <code class="fw-bold flex-grow-1 code-title-bg">/audio</code>
+                            <span class="badge bg-success2 text-dark">Requires login</span>
+                        </button>
+                    </h2>
+                    <div id="ep-audio" class="accordion-collapse collapse" aria-labelledby="hdr-audio" data-bs-parent="#apiAccordion">
+                        <div class="accordion-body">
+                            <p class="mb-2">Shows a form when no query is provided. Streams audio when <code>url</code> is present.</p>
+
+                            <h6 class="mt-3">Query Parameters</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead>
+                                        <tr><th style="width:160px;">Name</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>url</code></td>
+                                            <td>string (URL)</td>
+                                            <td><span class="badge bg-danger">yes</span></td>
+                                            <td>YouTube URL (e.g., <code>https://www.youtube.com/watch?v=...</code>)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>format</code></td>
+                                            <td>string</td>
+                                            <td><span class="badge bg-secondary">no</span></td>
+                                            <td>One of <code>best</code>, <code>m4a</code>, <code>mp3</code>, <code>aac</code>, <code>flac</code>. Default <code>best</code>.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h6 class="mt-3">Example</h6>
+                            <div class="codebox">
+                                <pre class="bg-light rounded small mb-0"><code>@($"GET https://{Context.Request.Host}/audio?url=https://www.youtube.com/watch?v=...&format=mp3")</code></pre>
+                                <button class="btn btn-sm btn-outline-secondary copy-btn"
+                                        data-copy="@($"https://{Context.Request.Host}/audio?url=https://www.youtube.com/watch?v=...&format=mp3")">
+                                    Copy URL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST /audio/direct -->
+                <div class="accordion-item shadow-sm mb-3">
+                    <h2 class="accordion-header" id="hdr-direct">
+                        <button class="accordion-button collapsed d-flex align-items-center gap-2" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#ep-direct" aria-expanded="false" aria-controls="ep-direct">
+                            <span class="badge bg-success" style="background:#FA5F55 !important;">POST</span>
+                            <code class="fw-bold flex-grow-1 code-title-bg">/audio/direct</code>
+                            <span class="badge bg-info text-dark" style="background:#C41E3A !important; color:black !important;">Sends creds per request</span>
+                        </button>
+                    </h2>
+                    <div id="ep-direct" class="accordion-collapse collapse" aria-labelledby="hdr-direct" data-bs-parent="#apiAccordion">
+                        <div class="accordion-body">
+                            <p class="mb-2">Cookie-less path. Provide username/password in JSON body along with the target URL and desired format.</p>
+
+                            <h6 class="mt-3">Request Body (JSON)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead>
+                                        <tr><th style="width:160px;">Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><code>username</code></td><td>string</td><td><span class="badge bg-danger">yes</span></td><td>Configured user</td></tr>
+                                        <tr><td><code>password</code></td><td>string</td><td><span class="badge bg-danger">yes</span></td><td>User password</td></tr>
+                                        <tr><td><code>url</code></td><td>string (URL)</td><td><span class="badge bg-danger">yes</span></td><td>YouTube URL</td></tr>
+                                        <tr><td><code>format</code></td><td>string</td><td><span class="badge bg-secondary">no</span></td><td><code>best</code> | <code>m4a</code> | <code>mp3</code> | <code>aac</code> | <code>flac</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h6 class="mt-3">cURL Example</h6>
+                            @{
+                                var baseUrl = $"https://{Context.Request.Host}";
+                                var curlJson = $"{{\\\"username\\\":\\\"username\\\",\\\"password\\\":\\\"password\\\",\\\"url\\\":\\\"https://www.youtube.com/watch?v=...\\\",\\\"format\\\":\\\"mp3\\\"}}";
+                                var curlCmd = $"curl -X POST \"{baseUrl}/audio/direct\" -H \"Content-Type: application/json\" -d \"{curlJson}\" -o out.mp3";
+                            }
+                            <div class="codebox">
+                                <pre class="bg-light rounded small mb-0"><code>@curlCmd</code></pre>
+                                <button class="btn btn-sm btn-outline-secondary copy-btn" data-copy="@curlCmd">Copy curl</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET /audio/healthz -->
+                <div class="accordion-item shadow-sm">
+                    <h2 class="accordion-header" id="hdr-health">
+                        <button class="accordion-button collapsed d-flex align-items-center gap-2" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#ep-health" aria-expanded="false" aria-controls="ep-health">
+                            <span class="badge bg-primary">GET</span>
+                            <code class="fw-bold flex-grow-1 code-title-bg">/audio/healthz</code>
+                            <span class="badge bg-secondary">Public</span>
+                        </button>
+                    </h2>
+                    <div id="ep-health" class="accordion-collapse collapse" aria-labelledby="hdr-health" data-bs-parent="#apiAccordion">
+                        <div class="accordion-body">
+                            <p class="mb-2">Quick readiness probe. Returns <code>{ "ok": true }</code> when the binaries are available.</p>
+                            <div class="codebox">
+                                <pre class="bg-light rounded small mb-0"><code>@($"GET https://{Context.Request.Host}/audio/healthz")</code></pre>
+                                <button class="btn btn-sm btn-outline-secondary copy-btn"
+                                        data-copy="@($"https://{Context.Request.Host}/audio/healthz")">
+                                    Copy URL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <footer class="text-muted small mt-4">
+                <span class="me-2">Formats:</span>
+                <span class="badge bg-dark">best</span>
+                <span class="badge bg-dark">m4a</span>
+                <span class="badge bg-dark">mp3</span>
+                <span class="badge bg-dark">aac</span>
+                <span class="badge bg-dark">flac</span>
+            </footer>
+        </div>
+    </section>
+</body>
+</html>

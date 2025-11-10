@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Cookie Manager";
+}
+
+<div class="container py-4">
+    <h3>Update YouTube Cookies</h3>
+    @if (TempData["ok"] != null)
+    {
+        <div class="alert alert-success">@TempData["ok"]</div>
+    }
+    <div class="mb-2">
+        <small class="text-muted">Path: @ViewBag.Path | Exists: @ViewBag.Exists | Size: @ViewBag.Size bytes</small>
+    </div>
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <label class="form-label">Paste Netscape cookie file contents</label>
+            <textarea name="cookieText" class="form-control" rows="12" spellcheck="false"
+                      placeholder="# Netscape HTTP Cookie File&#10;.youtube.com	TRUE	/	FALSE	1893456000	..."></textarea>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="text-danger mt-2">@(ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage)</div>
+            }
+        </div>
+        <button class="btn btn-primary">Save</button>
+    </form>
+
+    <p class="text-muted mt-3">
+        Tip: after exporting cookies, close the browser immediately and don’t re-visit YouTube on that machine. Don’t sign out/change password, or the server cookie dies.
+    </p>
+</div>

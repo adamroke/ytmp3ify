@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark">
+    <title>ytmp3ify - @ViewData["Title"]</title>
+
+    <!-- Allow UA widgets & forms to adopt dark mode correctly -->
+    <meta name="color-scheme" content="light dark">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ytmp3ify.styles.css" asp-append-version="true" />
+
+    <style>
+        /* Make sure the inline SVG displays and aligns like the old icon */
+        .navbar .navbar-toggler .hamburger-icon {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Light mode (default): dark icon */
+        .navbar .navbar-toggler {
+            color: rgba(0,0,0,0.85);
+            border-color: rgba(0,0,0,0.2);
+        }
+
+        /* Dark mode via your theme attribute (set in your script) */
+        html[data-bs-theme="dark"] .navbar .navbar-toggler {
+            color: rgba(255,255,255,0.92);
+            border-color: #2e2e2e;
+        }
+
+        /* If you also support a manual override <html data-theme="dark"> */
+        html[data-theme="dark"] .navbar .navbar-toggler {
+            color: rgba(255,255,255,0.92);
+            border-color: #2e2e2e;
+        }
+
+        /* Optional: nicer tap target feedback */
+        .navbar .navbar-toggler:focus {
+            outline: none;
+            box-shadow: 0 0 0 .2rem rgba(128,128,128,.25);
+        }
+
+        html[data-bs-theme="dark"] .navbar .navbar-toggler:focus,
+        html[data-theme="dark"] .navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 .2rem rgba(255,255,255,.15);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Use bg-body / border so it adapts in both themes -->
+        <nav class="navbar navbar-expand-sm border-bottom mb-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" style="margin-right:0px;" asp-controller="Home" asp-action="Index">
+                    <!-- Auto-swap the logo based on OS theme -->
+                    <picture>
+                        <!-- Dark-mode logo (transparent, light glyphs) -->
+                        <source srcset="~/img/ytmp3ify_dark.png" media="(prefers-color-scheme: dark)">
+                        <!-- Light-mode fallback (your current light logo) -->
+                        <img src="~/img/ytmp3ify.png" alt="ytmp3ify" style="height:46px;" />
+                    </picture>
+                </a>
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <!-- keep Bootstrap's span but hide it visually -->
+                    <span class="navbar-toggler-icon d-none"></span>
+
+                    <!-- inline SVG that follows currentColor -->
+                    <svg class="hamburger-icon" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"
+                         focusable="false">
+                        <path d="M4 7h22M4 15h22M4 23h22"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-miterlimit="10"
+                              stroke-width="2" />
+                    </svg>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="ready">Home</a>
+                        </li>
+                        @if (User?.Identity?.IsAuthenticated == true &&
+                                                string.Equals(User.Identity!.Name, "addam.mp3", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Cookie">Admin</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="logout">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - ytmp3ify
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Set Bootstrap theme based on OS + live updates on change -->
+    <script>
+        (function () {
+            const mql = window.matchMedia('(prefers-color-scheme: dark)');
+            const apply = () =>
+                document.documentElement.setAttribute('data-bs-theme', mql.matches ? 'dark' : 'light');
+            mql.addEventListener('change', apply);
+            apply();
+        })();
+    </script>
+
+    <script>
+        (function(){
+          const nav = document.querySelector('nav.navbar');
+          const prefersDark = matchMedia('(prefers-color-scheme: dark)');
+          const stored = localStorage.getItem('theme'); // if you added the manual toggle
+          const isDark = () => stored ? stored === 'dark' : prefersDark.matches;
+
+          const apply = () => {
+            nav.classList.toggle('navbar-dark', isDark());
+            nav.classList.toggle('navbar-light', !isDark());
+          };
+          prefersDark.addEventListener('change', apply);
+          window.addEventListener('storage', apply); // if you flip theme from another tab
+          apply();
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

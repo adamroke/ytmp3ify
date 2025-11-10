@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "audio fetch";
+    bool submitted = ViewBag.Submitted == true;
+}
+
+@section Scripts {
+    <script>
+        (function () {
+          const form = document.getElementById('audioForm');
+          const btn = document.getElementById('getBtn');
+          const loading = document.getElementById('loading');
+
+          // Reset on load
+          btn.disabled = false;
+          loading.classList.add('d-none');
+
+          form.addEventListener('submit', () => {
+            const urlInput = form.querySelector('input[name="url"]');
+            if (!urlInput || !urlInput.value.trim()) return;
+
+            btn.disabled = true;
+            loading.classList.remove('d-none');
+
+            // Hide ONLY when the tab regains focus (e.g., after Save As)
+            window.addEventListener('focus', () => {
+              btn.disabled = false;
+              loading.classList.add('d-none');
+            }, { once: true });
+          });
+        })();
+    </script>
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+        form{max-width:640px}
+        label{display:block;margin:.75rem 0 .25rem}
+        input, select{width:100%;padding:.5rem;border:1px solid #ccc;border-radius:.375rem}
+        button{margin-top:1rem;padding:.6rem 1rem;border:0;border-radius:.375rem;background:#111;color:#fff;cursor:pointer}
+        .errors{color:#b00020;margin:1rem 0}
+    </style>
+
+    <style>
+        .form-shell{max-width: 720px;}
+        /* Fallbacks when Bootstrap isn't present */
+        .d-none{display:none!important}
+        .alert{padding:0.75rem 1rem;border:1px solid #bee5eb;background:#e8f7fc;border-radius:0.25rem}
+        .mt-3{margin-top:1rem}
+        .d-grid{display:grid}
+        .btn[disabled]{opacity:.65;cursor:not-allowed}
+        .spinner-border{
+          display:inline-block; width:1rem; height:1rem; border:.15em solid currentColor;
+          border-right-color:transparent; border-radius:50%; animation:spin .75s linear infinite;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>@ViewData["Title"]</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="errors">
+            @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@err.ErrorMessage</div>
+            }
+        </div>
+    }
+    <div class="form-shell">
+        <form id="audioForm" method="get" action="/audio">
+            <label for="url">YouTube URL</label>
+            <input id="url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." required />
+
+            <label for="format">Format</label>
+            <select id="format" name="format">
+                <option value="mp3" selected>mp3 (auto)</option>
+                <option value="best">best</option>
+                <option value="m4a">m4a</option>
+                <option value="aac">aac</option>
+                <option value="flac">flac</option>
+            </select>
+
+            <button id="getBtn" type="submit">Get audio</button>
+        </form>
+
+        <div id="loading" class="alert alert-info mt-3 d-none" role="status" aria-live="polite">
+            <div class="d-flex align-items-center gap-2">
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span>Extracting audio… usually ~10–20s. Don’t close this tab.</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

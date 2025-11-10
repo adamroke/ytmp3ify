@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="YoutubeDLSharp" Version="1.1.2" />
+  </ItemGroup>
+
+  <!-- Copy pre-bundled binaries into output/publish -->
+  <ItemGroup>
+    <Content Include="bin-deps\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="cookies\**" />
+    <Content Remove="cookies\**" />
+    <EmbeddedResource Remove="cookies\**" />
+    <None Remove="cookies\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin-deps\" />
+  </ItemGroup>
+</Project>
