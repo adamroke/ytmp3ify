@@ -37,3 +37,12 @@ Users are responsible for ensuring that any tools or integrations used with this
 ---
 Released under the MIT License.
 See LICENSE for details.
+
+---
+## 🚀 Quickstart
+---
+Copy appsettings.json to appsettings.Development.json and fill username/password values. This project does not ship external binaries (e.g., ffmpeg, yt-dlp). Install them separately and place them into ./ytmp3ify/bin-deps/. To run, in a bash shell:
+
+```bash
+dotnet restore
+dotnet run --project ytmp3ify/ytmp3ify.csproj
