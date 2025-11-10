@@ -21,7 +21,7 @@ namespace ytmp3ify.Controllers
             return @"D:\home\data\ytmp3ify\youtube.txt";
         }
 
-        private bool IsOwner() => User?.Identity?.IsAuthenticated == true && string.Equals(User.Identity!.Name, "addam.mp3", StringComparison.OrdinalIgnoreCase);
+        private bool IsOwner() => User?.Identity?.IsAuthenticated == true && string.Equals(User.Identity!.Name, "admin", StringComparison.OrdinalIgnoreCase);
 
         [HttpGet("cookie")]
         public IActionResult Cookie()
