@@ -4,10 +4,16 @@ Lightweight .NET 8 microservice for modular media pipeline orchestration
 
 ytmp3ify is a demonstration of how to build a secure, modular file-processing service using ASP.NET Core MVC and minimal APIs. It manages authentication, job scheduling, and pipeline execution for external media-processing tools.
 The project emphasizes:
+
+
 &nbsp;   ✅ Clean separation of concerns between API, service, and worker layers
+
 &nbsp;   ✅ Asynchronous job orchestration with cancellation support
+
 &nbsp;   ✅ Integration with third-party CLI tools via sandboxed processes
+
 &nbsp;   ✅ Secure cookie-based authentication and endpoint protection
+
 &nbsp;   ✅ Streamlined file streaming and caching mechanisms
 
 ---
